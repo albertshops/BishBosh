@@ -1,0 +1,27 @@
+#!/bin/bash
+
+functionsFile=$(pwd)/Bosh
+
+if [ -f $functionsFile ]; then
+    source $functionsFile
+else
+    echo "Bosh file not found."
+    exit 1
+fi
+
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 functionName [arguments...]"
+    exit 1
+fi
+
+functionName=$1
+shift
+
+functionList=$(declare -F | cut -d " " -f 3)
+
+if echo "$functionList" | grep -q "^$functionName$"; then
+    "$functionName" "$@"
+else
+    echo "Script '$functionName' not found in Bosh file"
+    exit 1
+fi
